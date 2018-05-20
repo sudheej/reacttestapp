@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -8,84 +8,61 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Counter = function (_React$Component) {
-    _inherits(Counter, _React$Component);
+var VisibilityToggler = function (_React$Component) {
+    _inherits(VisibilityToggler, _React$Component);
 
-    function Counter(props) {
-        _classCallCheck(this, Counter);
+    function VisibilityToggler(props) {
+        _classCallCheck(this, VisibilityToggler);
 
-        var _this = _possibleConstructorReturn(this, (Counter.__proto__ || Object.getPrototypeOf(Counter)).call(this, props));
+        var _this = _possibleConstructorReturn(this, (VisibilityToggler.__proto__ || Object.getPrototypeOf(VisibilityToggler)).call(this, props));
 
-        _this.onhandleAdd = _this.onhandleAdd.bind(_this);
-        _this.onhandleSub = _this.onhandleSub.bind(_this);
-        _this.onhandleReset = _this.onhandleReset.bind(_this);
+        _this.triggerSwitch = _this.triggerSwitch.bind(_this);
         _this.state = {
-            count: 0
+            visibility: true
         };
         return _this;
     }
 
-    _createClass(Counter, [{
-        key: 'onhandleAdd',
-        value: function onhandleAdd() {
+    _createClass(VisibilityToggler, [{
+        key: "triggerSwitch",
+        value: function triggerSwitch() {
             this.setState(function (prevState) {
                 return {
-                    count: prevState.count + 1
+                    visibility: !prevState.visibility
                 };
             });
         }
     }, {
-        key: 'onhandleSub',
-        value: function onhandleSub() {
-            this.setState(function (prevState) {
-                return {
-                    count: prevState.count - 1
-                };
-            });
-        }
-    }, {
-        key: 'onhandleReset',
-        value: function onhandleReset() {
-            this.setState(function (prevState) {
-                return {
-                    count: 0
-                };
-            });
-        }
-    }, {
-        key: 'render',
+        key: "render",
         value: function render() {
-
             return React.createElement(
-                'div',
+                "div",
                 null,
                 React.createElement(
-                    'h1',
+                    "h1",
                     null,
-                    'Count : ',
-                    this.state.count,
-                    ' '
+                    "Visibility tester page"
                 ),
                 React.createElement(
-                    'button',
-                    { onClick: this.onhandleAdd },
-                    '+1'
+                    "button",
+                    { id: "switcher", onClick: this.triggerSwitch },
+                    " ",
+                    this.state.visibility ? "Hide" : "show"
                 ),
-                React.createElement(
-                    'button',
-                    { onClick: this.onhandleSub },
-                    '-1'
-                ),
-                React.createElement(
-                    'button',
-                    { onClick: this.onhandleReset },
-                    'reset'
+                this.state.visibility && React.createElement(
+                    "div",
+                    null,
+                    React.createElement(
+                        "h1",
+                        null,
+                        "HEY JUDE !!"
+                    )
                 )
             );
         }
     }]);
 
-    return Counter;
+    return VisibilityToggler;
 }(React.Component);
 
-ReactDOM.render(React.createElement(Counter, null), document.getElementById('app'));
+ReactDOM.render(React.createElement(VisibilityToggler, null), document.getElementById("app"));

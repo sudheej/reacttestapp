@@ -1,30 +1,38 @@
 
-let visibilityFlag = false;
+class VisibilityToggler extends React.Component {
 
-let disappear = () => {
-visibilityFlag = !visibilityFlag
-renderPage();
+    constructor(props) {
+        super(props);
+        this.triggerSwitch = this.triggerSwitch.bind(this);
+        this.state = {
+            visibility : true
+        }
+    }
+
+    triggerSwitch() {
+        this.setState( (prevState) => {
+            return {
+                visibility : !prevState.visibility
+            }
+        });
+    }
+
+    render() {
+        return (
+            <div>
+            <h1>Visibility tester page</h1>
+            <button id="switcher" onClick={this.triggerSwitch}> {this.state.visibility ? "Hide":"show"}</button>
+            {this.state.visibility && (
+                <div>
+                <h1>HEY JUDE !!</h1>
+                </div>
+        
+               )}
+        
+            </div>
+        )
+    }
+
 }
 
-
-let renderPage = () => {
-
-let canvastemplate = (
-    <div>
-    <p>visibility tester page</p>
-    <button id="switcher" onClick={disappear}> {visibilityFlag? "Hide":"show"}</button>
-    {visibilityFlag && (
-        <div>
-        <h1>Hey Jude</h1>
-        </div>
-
-       )}
-    </div>
-)
-
-ReactDOM.render(canvastemplate,appRoot)
-}
-
-
-var appRoot = document.getElementById('app');
-renderPage();
+ReactDOM.render(<VisibilityToggler />,document.getElementById("app"));
