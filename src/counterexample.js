@@ -1,40 +1,52 @@
-var appProperties = {
-    title : "My awesome react",
-    subtitle: "English or French"
+class Counter extends React.Component {
+
+    constructor(props) {
+            super(props);
+            this.onhandleAdd = this.onhandleAdd.bind(this);
+            this.onhandleSub = this.onhandleSub.bind(this);
+            this.onhandleReset = this.onhandleReset.bind(this);
+            this.state = {
+                count: 0
+            };
+    }
+
+    onhandleAdd() {
+            this.setState( (prevState) => {
+                    return {
+                       count: prevState.count + 1
+                    }
+            });
+    }
+
+    onhandleSub() {
+        this.setState( (prevState) => {
+            return {
+                count : prevState.count - 1
+        }
+        });
+    }
+
+    onhandleReset() {
+        this.setState( (prevState) => {
+            return {
+                count: 0
+            }
+        });
+    }
+
+    render() {
+        
+        return (
+            <div>
+            <h1>Count : {this.state.count} </h1>
+            <button onClick={this.onhandleAdd}>+1</button>
+            <button onClick={this.onhandleSub}>-1</button>
+            <button onClick={this.onhandleReset}>reset</button>
+            </div>
+        )
+       
+    }
+
 }
 
-let expressionFun = (location) => location;
-
-let appHeader = (
-    <div>
-                <h1>{appProperties.title}</h1>
-                <p>{appProperties.subtitle}</p>
-                <p>{expressionFun("NewYork")}</p>
-    </div>
-);
-
-let count = 0;
-
-let addone = () => {
-    count++
-    renderPage()
-}
-
-let renderPage = () => {
-
-    
-let template2 = (
-
-    <div>
-    <h1>Count : {count}</h1>
-    <button onClick={addone}>+1</button>
-    </div>
-
-);
-
-ReactDOM.render(template2, appRoot);
-
-}
-
-var appRoot = document.getElementById('app');
-renderPage()
+ReactDOM.render(<Counter />,document.getElementById('app'));
