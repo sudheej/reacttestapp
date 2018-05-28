@@ -8,102 +8,6 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-/*
-
-Key points to note here
-
-1. To communicate between the parent and the child, one way communication is possible with the help of the below
-this.props.yourparaentprop
-2. If the reverse communication has to happen, a method needs to be available on the parent which has to be passed on in the render function
-
-Example (psedocode)
-Parent {
-    addnumbers()
-
-//The render function should be able to come in handy where a reference of add numbers has to be passed
-    render (
-        <mychildcomponent addnumbers={this.addnumbers()}>
-    )
-}
-
-What the above code does ? it takes the reference and pass is on to the child component
-
-In the child component this method addnumbers in the parent can be called using the reference this.props.addnumbers
-
-This complets the revers communication between child --> parent
-
-Passing on Data between child and parent
------------------------------------------
-
-Similar to the previous instance, there would be a function in the parent which accepts argument, and this has to be manupulated.
-Considering that a function already avialble in child which does stuff like, trimming user input in texct box etc.
-The value which we need to pass to the parent can be passed as a parameter
-
-Example
-
-this.props.addnumbers(option);
-
-In order for this to work, the child components constructor function has to have the reference of this context, this is very important.
-In the above example it will look like below
-
-constructor(props) {
-    super(props)
-    this.addnumbers = this.addnumbers.bind(this);
-}
-
-What this does is it transferes the option to add number and there a set state function like below can be used to add the values
-
-this.setState( (prevstate) => {
-    return {
-        numbers: prevstate + option // option we received as an argument
-    }
-})
-
-Passing down an error message from parent to child
----------------------------------------------------
-1. Lets say we add the below validation in the parent module
-
-addOption(number) {
-    if(!number) {
-        return 'Error the number you passed is undefined'
-    }
-   
-    //VERY IMPORTANT : Notice that we do not explictly return with an else statement
-     --- If the number is not valid we do not exlse it,. this would mean addoption implictly returns undefined
-     This means if undefined is returned we are good else we are bad.
-     This logic we are going to use to capture the error message
-     
-    this.setState( (prevstate) => {
-    return {
-        numbers: prevstate + option // option we received as an argument
-    }
-    })
-
-}
- --- Now what happens in the child component when you return an error message
- -- Assign the return value to a variable
-
- constructor () {
-     this.state = {
-         error: undefined
-     }
- }
-
- const actionAdd = this.props.addOption(number);
- this.setState( () => {
-     error = this.actionAdd
- });
-
-       In the render page of child 
-
-       render (
-           {this.state.error && '<p>There is an error message</p>'}
-       )
-
-
-
-*/
-
 var IndecisionApp = function (_React$Component) {
     _inherits(IndecisionApp, _React$Component);
 
@@ -112,65 +16,33 @@ var IndecisionApp = function (_React$Component) {
 
         var _this = _possibleConstructorReturn(this, (IndecisionApp.__proto__ || Object.getPrototypeOf(IndecisionApp)).call(this, props));
 
-        _this.deleteallitems = _this.deleteallitems.bind(_this);
-        _this.randomPickOne = _this.randomPickOne.bind(_this);
-        _this.state = {
-            listofOptions: ['firstone', 'secondone', 'third one', 'fourth one']
-        };
+        _this.submissionForm = _this.submissionForm.bind(_this);
 
+        _this.state = {
+            options: []
+        };
         return _this;
     }
 
     _createClass(IndecisionApp, [{
-        key: 'render',
-        value: function render() {
-            var title = "Iron man the great";
-            var subtitle = "Jarvis the lovable assistant..";
+        key: 'submissionForm',
+        value: function submissionForm(optionValue) {
+            if (!optionValue) {
+                return 'Enter valid value to add item';
+            } else if (this.state.options.indexOf(optionValue) > -1) {
+                return 'This option already exists';
+            }
 
-            return React.createElement(
-                'div',
-                null,
-                React.createElement(Header, { title: title, subtitle: subtitle }),
-                React.createElement(IronmanImage, null),
-                React.createElement(Action, { hasItemsin: this.state.listofOptions.length > 0 ? false : true, pickerFunction: this.randomPickOne }),
-                React.createElement(AddButton, null),
-                React.createElement(Options, { listofOptions: this.state.listofOptions, removeitems: this.deleteallitems })
-            );
-        }
-    }, {
-        key: 'deleteallitems',
-        value: function deleteallitems() {
-
-            this.setState(function () {
+            this.setState(function (prevState) {
                 return {
-                    listofOptions: []
+                    options: prevState.options.concat(optionValue)
                 };
             });
         }
+
+        //Render function
+
     }, {
-        key: 'randomPickOne',
-        value: function randomPickOne() {
-            var randomNum = Math.floor(Math.random() * this.state.listofOptions.length);
-            var option = this.state.listofOptions[randomNum];
-            alert(option);
-        }
-    }]);
-
-    return IndecisionApp;
-}(React.Component);
-
-{/* Indecision app nests other react components */}
-
-var Header = function (_React$Component2) {
-    _inherits(Header, _React$Component2);
-
-    function Header() {
-        _classCallCheck(this, Header);
-
-        return _possibleConstructorReturn(this, (Header.__proto__ || Object.getPrototypeOf(Header)).apply(this, arguments));
-    }
-
-    _createClass(Header, [{
         key: 'render',
         value: function render() {
             return React.createElement(
@@ -179,68 +51,44 @@ var Header = function (_React$Component2) {
                 React.createElement(
                     'h1',
                     null,
-                    this.props.title
+                    ' Hello there '
                 ),
-                React.createElement(
-                    'h2',
-                    null,
-                    this.props.subtitle
-                )
+                React.createElement(ApplicationForm, { handleAdd: this.submissionForm }),
+                React.createElement(Options, { optionArray: this.state.options })
             );
         }
     }]);
 
-    return Header;
+    return IndecisionApp;
 }(React.Component);
 
-var Action = function (_React$Component3) {
-    _inherits(Action, _React$Component3);
+var ApplicationForm = function (_React$Component2) {
+    _inherits(ApplicationForm, _React$Component2);
 
-    function Action() {
-        _classCallCheck(this, Action);
+    function ApplicationForm(props) {
+        _classCallCheck(this, ApplicationForm);
 
-        return _possibleConstructorReturn(this, (Action.__proto__ || Object.getPrototypeOf(Action)).apply(this, arguments));
+        var _this2 = _possibleConstructorReturn(this, (ApplicationForm.__proto__ || Object.getPrototypeOf(ApplicationForm)).call(this, props));
+
+        _this2.addItemtoArray = _this2.addItemtoArray.bind(_this2);
+
+        _this2.state = {
+            error: undefined
+        };
+
+        return _this2;
     }
 
-    _createClass(Action, [{
-        key: 'render',
-        value: function render() {
-            return React.createElement(
-                'div',
-                null,
-                React.createElement(
-                    'button',
-                    { onClick: this.props.pickerFunction, disabled: this.props.hasItemsin },
-                    'Bring Sudheej alive'
-                )
-            );
-        }
-    }]);
-
-    return Action;
-}(React.Component);
-
-var AddButton = function (_React$Component4) {
-    _inherits(AddButton, _React$Component4);
-
-    //What the constructor does it, it binds the method with the addAction method
-    //This more efficient, bind is used for binding the method
-    //If bind is not used then system would throw undefined 
-    //Because the scope is unable to identify the this method 
-    function AddButton(props) {
-        _classCallCheck(this, AddButton);
-
-        var _this4 = _possibleConstructorReturn(this, (AddButton.__proto__ || Object.getPrototypeOf(AddButton)).call(this, props));
-
-        _this4.addAction = _this4.addAction.bind(_this4);
-        return _this4;
-    }
-
-    _createClass(AddButton, [{
-        key: 'addAction',
-        value: function addAction(e) {
+    _createClass(ApplicationForm, [{
+        key: 'addItemtoArray',
+        value: function addItemtoArray(e) {
             e.preventDefault();
-            console.log(e.target.elements.getoption.value);
+            var option = e.target.elements.getvalue.value.trim();
+            var error = this.props.handleAdd(option);
+
+            this.setState(function () {
+                return { error: error };
+            });
         }
     }, {
         key: 'render',
@@ -248,25 +96,30 @@ var AddButton = function (_React$Component4) {
             return React.createElement(
                 'div',
                 null,
+                this.state.error && React.createElement(
+                    'p',
+                    null,
+                    this.state.error
+                ),
                 React.createElement(
                     'form',
-                    { onSubmit: this.addAction },
-                    React.createElement('input', { id: 'getoption' }),
+                    { onSubmit: this.addItemtoArray },
+                    React.createElement('input', { id: 'getvalue' }),
                     React.createElement(
                         'button',
                         null,
-                        'Submit Option'
+                        'Submit'
                     )
                 )
             );
         }
     }]);
 
-    return AddButton;
+    return ApplicationForm;
 }(React.Component);
 
-var Options = function (_React$Component5) {
-    _inherits(Options, _React$Component5);
+var Options = function (_React$Component3) {
+    _inherits(Options, _React$Component3);
 
     function Options() {
         _classCallCheck(this, Options);
@@ -281,20 +134,10 @@ var Options = function (_React$Component5) {
                 'div',
                 null,
                 React.createElement(
-                    'p',
-                    null,
-                    'The options component goes here '
-                ),
-                React.createElement(
-                    'button',
-                    { onClick: this.props.removeitems },
-                    'Remove Item'
-                ),
-                React.createElement(
                     'ol',
                     null,
-                    this.props.listofOptions.map(function (item) {
-                        return React.createElement(Option, { key: item, optionText: item });
+                    this.props.optionArray.map(function (element) {
+                        return React.createElement(Option, { key: element, item: element });
                     })
                 )
             );
@@ -304,31 +147,8 @@ var Options = function (_React$Component5) {
     return Options;
 }(React.Component);
 
-var IronmanImage = function (_React$Component6) {
-    _inherits(IronmanImage, _React$Component6);
-
-    function IronmanImage() {
-        _classCallCheck(this, IronmanImage);
-
-        return _possibleConstructorReturn(this, (IronmanImage.__proto__ || Object.getPrototypeOf(IronmanImage)).apply(this, arguments));
-    }
-
-    _createClass(IronmanImage, [{
-        key: 'render',
-        value: function render() {
-            return React.createElement(
-                'div',
-                null,
-                React.createElement('img', { height: '130px', width: '90px', src: '\\assets\\Epic_Iron_Man.png', align: 'right' })
-            );
-        }
-    }]);
-
-    return IronmanImage;
-}(React.Component);
-
-var Option = function (_React$Component7) {
-    _inherits(Option, _React$Component7);
+var Option = function (_React$Component4) {
+    _inherits(Option, _React$Component4);
 
     function Option() {
         _classCallCheck(this, Option);
@@ -342,7 +162,7 @@ var Option = function (_React$Component7) {
             return React.createElement(
                 'li',
                 null,
-                this.props.optionText
+                this.props.item
             );
         }
     }]);
@@ -350,6 +170,6 @@ var Option = function (_React$Component7) {
     return Option;
 }(React.Component);
 
-var template = React.createElement(IndecisionApp, null);
+var apptemplate = React.createElement(IndecisionApp, null);
 
-ReactDOM.render(template, document.getElementById('app'));
+ReactDOM.render(apptemplate, document.getElementById("app"));
